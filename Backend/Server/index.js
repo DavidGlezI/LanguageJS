@@ -1,26 +1,38 @@
 
 
-let input = "Adelante (10)";
+let input = "avanzar (10)"; // INPUT
 
 
-const paragraph = 'The quick brown fox jumps over the lazy dog. It barked.';
-const regex = /[aA]delante|[0-9]+|\(|\)/g;
-const found = input.match(regex);
+const regex = /[\w]+|[\(\)]|[0-9]*/g;
+const found = input.match(regex); // Guarda en un arreglo todas las palabras que hicieron match con la regex
 
-console.log(found);
+console.log(found); 
 
+
+// Map con las expresiones y sus tokens correspondientes
 const expressions= new Map([
-    [new RegExp(/[aA]delante/), "Identificador"], 
-    [new RegExp(/[0-9]+/), "integer"],
-    [new RegExp(/\(/), "openParentesis"],  // value = regex, key = string
-    [new RegExp(/\)/), "closedParentesis"]
+    [/[aA]vanzar|[rR]etroceder|[rR]epetir/, "Instruccion"], 
+    [/[Vv]uelta/, "giro"],
+    [/\(/, "openParentesis"],  // value = regex, key = string
+    [/\)/, "closedParentesis"],
+    [/[Ii]zquierda|[Dd]erecha/, "direccion"],
+    [/[Pp]intura/, "identificadorDeColor"], 
+    [/[Rr]ojo|[Aa]zul|[Vv]erde|[Aa]marillo/, "colores"],
+    [/[Oo]vni/, "objeto"],
+    [/^(?:[1-9]|[1-4][0-9]|50)$/, "numeros"],
+    [/([0-2]?[0-9]{1,2}|3[0-5][0-9]|360)/, "grados"],
 ]);
     
-let arr = new Array;
+
     
+//Cada palabra del arreglo se checan con el primer valor del map, que son las expresiones regulares
+// Si hacen match, se guarda el token en otro arreglo
 expressions.forEach((key, value)=>{
     let exp = new RegExp(value);
     found.forEach((word,i)=>{
+        if(word === ''){
+            found.splice(i,1);
+        }
         if(exp.test(word)){
             found[i]= key;
         }
