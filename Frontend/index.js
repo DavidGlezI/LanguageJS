@@ -1,9 +1,3 @@
-
-/*
-let canvas = document.getElementById("myCanvas");
-let ctx = canvas.getContext("2d");
-
-*/
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 canvas.height = 400;
@@ -18,53 +12,6 @@ img1.onload = function(){
     ctx.drawImage(img1, xPos,yPos, 100 ,100); 
 }
 
-async function moveUfo(x,y){
-    const asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-    xPos = Number(xPos);
-    x = Number(x);
-    x= xPos+ x;
-    console.log(x);
-    while (true){
-        if(xPos < x){
-            xPos++;
-        }
-        else if (xPos > x){
-            
-            xPos--
-        }
-        ctx.drawImage(img1, xPos,yPos, 100 ,100);
-        if(xPos === x){
-            break;
-        }
-        
-        await asyncWait(10);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    yPos = Number(yPos);
-    y = Number(y);
-    y= yPos+ y;
-    console.log(y);
-    while (true){
-        if(yPos < y){
-            yPos++;
-        }
-        else if (yPos > y){
-            
-            yPos--
-        }
-        ctx.drawImage(img1, xPos,yPos, 100 ,100);
-        if(yPos === x){
-            break;
-        }
-        
-        await asyncWait(10);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    return Promise.resolve(undefined);
-}
-
 let btnAdelante = document.getElementById("adelante");
 let btnAtras = document.getElementById("atras");
 let btnIzquierda = document.getElementById("izquierda");
@@ -77,53 +24,19 @@ let string="";
 btnSubmit.addEventListener('click',()=>{
     let x = document.getElementById("text").value;
     string = x;
+    logica(string);
     document.getElementById("text").value = " ";
     console.log(string);
-    logica(string);
     
 })
 
 
 
 
-function adelante(numMovimiento){
-    ctx.beginPath();
-    ctx.moveTo(xPos,yPos);
-    moveUfo(0,-numMovimiento);
-}
-
-function atras(numMovimiento){
-    ctx.beginPath();
-    ctx.moveTo(xPos,yPos);
-    moveUfo(0,numMovimiento);
-
-}
-
-async function izquierda(numMovimiento){
-    console.log(numMovimiento);
-    console.log("izquierda");
-    await moveUfo(-numMovimiento,0);
-
-}
-
-async function derecha(numMovimiento){
-    console.log(numMovimiento);
-    console.log("derecha");
-    await moveUfo(numMovimiento,0);
-
-}
 
 
 
-
-
-function limpiarCanvas(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-
-
-function logica(input){
+async function logica(input){
     /*
     Avanzar, Retroceder, Repetir, Vuelta,  Centrar, Pintura
 
@@ -133,7 +46,86 @@ function logica(input){
     Centrar ovni 
     Pintura roja
     */
+    // MOVIMIENTOOOOO
 
+    
+
+
+    async function moveUfo(x,y){
+        const asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms))
+        xPos = Number(xPos);
+        x = Number(x);
+        x= xPos+ x;
+        console.log(x);
+        while (true){
+            if(xPos < x){
+                xPos++;
+            }
+            else if (xPos > x){
+                
+                xPos--
+            }
+            ctx.drawImage(img1, xPos,yPos, 100 ,100);
+            if(xPos === x){
+                break;
+            }
+            
+            await asyncWait(1);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        yPos = Number(yPos);
+        y = Number(y);
+        y= yPos+ y;
+        console.log(y);
+        while (true){
+            if(yPos < y){
+                yPos++;
+            }
+            else if (yPos > y){
+                
+                yPos--
+            }
+            ctx.drawImage(img1, xPos,yPos, 100 ,100);
+            if(yPos === y){
+                break;
+            }
+            
+            await asyncWait(1);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+        }
+        console.log("DONE MOV");
+        
+    }
+
+
+    async function adelante(numMovimiento){
+        await moveUfo(0,-numMovimiento);
+    }
+
+    async function atras(numMovimiento){
+        await moveUfo(0,numMovimiento);
+
+    }
+
+    async function izquierda(numMovimiento){
+        await moveUfo(-numMovimiento,0);
+
+    }
+
+    async function derecha(numMovimiento){
+        await moveUfo(numMovimiento,0);
+
+    }
+
+
+
+
+
+    function limpiarCanvas(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
 
 
 
@@ -168,38 +160,34 @@ function logica(input){
 
     expressions.forEach((key, value)=>{
         let regExp=(value);
-        
         found.forEach((word,i)=>{
             if(regExp.test(word)){
                 found[i]= {key,word};
+                
             }
         })
 
     })
+    found.forEach((token, word)=>{
+        console.log(token, word);
+    })
 
-    console.log(found);
-
-    function sigToken(){
-        let token = found.shift();
-        return [token.key, token.word];
-    }
-
-    function verificarInputVacio(){ // Utilizamos esta función para revisar si todavía hay items en el arreglo con las palabras aceptadas
-        if(found.length === 0){
-            return true;
-        }
-        else{
-            return false;
+    function sigToken2(arr){
+        if(arr.length != 0){
+            let token = arr.shift();
+            return [token.key, token.word];
         }
     }
 
-    
 
-    async function parser(){
-        let [token,word] = sigToken();
+
+await parser(found);
+async function parser(foundArr){
+    if(foundArr.length != 0){
+        let [token,word] = sigToken2(foundArr);
             if(token === 'Instruccion'){
                 let mov = word;
-                [token,word] = sigToken();
+                [token,word] = sigToken2(foundArr);
                 if(token === 'color' | token === 'objeto'){ // Checamos la constante (color, objeto, direccion) para aceptarla y terminar ó aceptarla y buscar más expresiones
                     // Si el arreglo todavía tiene algo, llamar a recursividad para aceptar la siguiente expresión
                     if(verificarInputVacio()){
@@ -207,42 +195,29 @@ function logica(input){
                         //process.exit(0);
                     }
                     else{
-                        parser();
+                        await parser(foundArr);
                     }
                 }
                 else if(token === 'direccion'){
                     let dir = word;
-                    [token, word] = sigToken();
+                    [token, word] = sigToken2(foundArr);
                     if(token === 'inicioParentesis' ){ // buscamos aceptar el (
-                        [token, word] = sigToken();
+                        [token, word] = sigToken2(foundArr);
                         if(  token === 'numero' | token === 'grado'){
                             let num = word;
-                            [token,word] = sigToken();
+                            [token,word] = sigToken2(foundArr);
                             if(token === 'finalParentesis'){
-                                if(verificarInputVacio()){
-                                    console.log("Frase aceptada / Sintaxis correcta");
-                                    
-                                    if(dir === 'izquierda'){
-                                        await izquierda(num);
-                                    }
-                                    else if(dir === 'derecha'){
-                                        await derecha(num);
-                                    }
-                                    //process.exit(0); // Termina el programa exitosamente
+                                if(dir === 'izquierda'){
+                                    await izquierda(num);
+                                    console.log("IZQUIERDA");
+                                    await parser(foundArr);
                                 }
-                                else{
-                                    
-                                    //[token,word] = sigToken();
-                                    parser();
-                                    console.log(dir);
-                                    console.log(num);
-                                    if(dir === 'izquierda'){
-                                        await izquierda(num);
-                                    }
-                                    else if(dir === 'derecha'){
-                                        await derecha(num);
-                                    }
+                                else if(dir === 'derecha'){
+                                    await derecha(num);
+                                    console.log("DERECHA");
+                                    await parser(foundArr);
                                 }
+                                
                             }
                             else{
                                 console.log("Error! Se esperaba: )");
@@ -260,30 +235,21 @@ function logica(input){
                     }
                 }
                 else if(token === 'inicioParentesis' ){ // buscamos aceptar el (
-                    [token,word] = sigToken();
-                    if(  token === 'numero' | token === 'grado'){
+                    [token,word] = sigToken2(foundArr);
+                    if( token === 'numero' || token === 'grado'){
                         let num = word;
-                        [token,word] = sigToken();
+                        [token,word] = sigToken2(foundArr);
                         if(token === 'finalParentesis'){
-                            if(verificarInputVacio()){
-                                console.log("Frase aceptada / Sintaxis correcta");
-                                if(mov = 'avanzar'){
-                                    await adelante(num);
-                                }
-                                else if(mov = 'retroceder'){
-                                    await atras(num);
-                                }
-                                //process.exit(0); // Termina el programa exitosamente
+                            if(mov === 'avanzar' || mov === 'Avanzar' ){
+                                console.log("ADELANTE2");
+                                await adelante(num);
+                                console.log("ADELANTE");
+                                await parser(foundArr);
                             }
-                            else{
-                                if(mov = 'avanzar'){
-                                    adelante(num);
-                                }
-                                else if(mov = 'retroceder'){
-                                    atras(num);
-                                }
-                                //[token,word] = sigToken();
-                                parser();
+                            else if(mov === 'retroceder' || mov === 'Retroceder'){
+                                await atras(num);
+                                console.log("ATRAS");
+                                await parser(foundArr);
                             }
                         }
                         else{
@@ -304,13 +270,12 @@ function logica(input){
                 }
             }
             else{
-                console.log("Error! Se esperaba: Instruccion");
-                //process.exit(1);
-            } 
+                console.log("Fin!");
+                await parser(foundArr);
+            }
         }
-
-
-    parser();
+        else{
+            console.log("No hay mas INPUT")
+        }
+    }
 }
-
-
