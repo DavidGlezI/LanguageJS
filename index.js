@@ -288,6 +288,8 @@ async function parser(foundArr){
                                     console.log("Frase aceptada!");
                                     await derecha(num);
                                     await parser(foundArr);
+                                }else{
+                                    console.log("Error sintaxis: Comando no reconocido, checar palabras reservadas y su sintaxis");
                                 }
                                 
                             }
@@ -318,6 +320,9 @@ async function parser(foundArr){
                                                 }
                                                 await parser(foundArr); //llamamos recursividad para aceptar más entradas
                                             }
+                                            else{
+                                                console.log("Error sintaxis: Comando no reconocido, checar palabras reservadas y su sintaxis");
+                                            }
                                         }
                                         else{
                                             console.log("Se esperaba: )")
@@ -339,7 +344,7 @@ async function parser(foundArr){
                             }
                         }
                         else{
-                            console.log("Error! Se esperaba: numero: 1-50");
+                            console.log("Error! Se esperaba: numero entero 1-50");
                             //process.exit(1); // Termina el programa con error
                         }
                     }
@@ -380,6 +385,9 @@ async function parser(foundArr){
                                             }
                                             await parser(foundArr); //llamamos recursividad para aceptar más entradas
                                         }
+                                        else{
+                                            console.log("Error sintaxis: Comando no reconocido, checar palabras reservadas y su sintaxis");
+                                        }
 
                                     }
                                     else{
@@ -406,7 +414,9 @@ async function parser(foundArr){
                                 console.log("Frase aceptada!");
                                 await atras(num);
                                 await parser(foundArr); //llamamos recursividad para aceptar más entradas
-                            }   
+                            }else{
+                                console.log("Error sintaxis: Comando no reconocido, checar palabras reservadas y su sintaxis");
+                            }
                         }
                         else{
                             console.log("Error! Se esperaba: ) ó ,");
@@ -414,7 +424,7 @@ async function parser(foundArr){
                         }
                     }
                     else{
-                        console.log("Error! Se esperaba: numero: 0-360");
+                        console.log("Error! Se esperaba: numero entero 1-50");
                         //process.exit(1); // Termina el programa con error
 
                     }
@@ -426,6 +436,7 @@ async function parser(foundArr){
                 }
             }
             else{
+                
                 await parser(foundArr);
             }
         }
