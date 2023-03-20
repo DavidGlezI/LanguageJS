@@ -1,3 +1,6 @@
+
+// Esta primera parte del código es para la configuración gráfica del canvas de HTML
+
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -51,23 +54,19 @@ img1.onload = function () {
   };
 
 
-let btnAdelante = document.getElementById("adelante");
-let btnAtras = document.getElementById("atras");
-let btnIzquierda = document.getElementById("izquierda");
-let btnDerecha = document.getElementById("derecha");
 
 let btnSubmit = document.getElementById('submit');
 
 let string="";
 
-let color = "red";
+let color = "red"; // Aqui ponemos el color rojo por default
 
-function cambiarColor(colorNuevo){
+function cambiarColor(colorNuevo){ // Creamos una función para poder cambiar el color más abajo
     color = colorNuevo;
 }
 
 
-
+// Este es el botón que envía los datos de la página y lo pasa por el Parser
 btnSubmit.addEventListener('click',()=>{
 
     let x = document.getElementById("text").value;
@@ -80,25 +79,13 @@ btnSubmit.addEventListener('click',()=>{
 
 
 
-let ovni = ctx.drawImage(img1,  xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height); 
 
-
+// Aqui tenemos toda la logica para procesar el lexico y la sintaxis
 
 async function logica(input){
-    /*
-    Avanzar, Retroceder, Repetir, Vuelta,  Centrar, Pintura
 
-    Avanzar (10)
-    Retrocer (10) Repetir (3)
-    Vuelta izquierda 60
-    Centrar ovni 
-    Pintura roja
-    */
-    // MOVIMIENTOOOOO
-
-   
-
-    async function moveUfo(x,y){
+    async function moveUfo(x,y){ // Esta función es para el movimiento de los gráficos
+        ctx.clearRect(xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height);
         const asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms))
         
         xPos = Number(xPos);
@@ -155,29 +142,35 @@ async function logica(input){
     
 
 
-    async function adelante(numMovimiento){
+    async function adelante(numMovimiento){ //Esta es la función para mover adelante
         await moveUfo(0,-numMovimiento);
 
     }
 
-    async function atras(numMovimiento){
+    async function atras(numMovimiento){ //Esta es la función para mover atras
         await moveUfo(0,numMovimiento);
     }
 
-    async function izquierda(numMovimiento){
+    async function izquierda(numMovimiento){ //Esta es la función para mover izquierda
         await moveUfo(-numMovimiento,0);
     }
 
-    async function derecha(numMovimiento){
+    async function derecha(numMovimiento){ //Esta es la función para mover derecha
         await moveUfo(numMovimiento,0);
 
     }
 
 
 
-    function limpiarCanvas(){
+    function limpiarCanvas(){ // Con esta función limpiamos los dibujos del canvas y dejamos las posiciones en default
+        ctx.beginPath();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img1,  xCentrado-(img1.width)/2, yCentrado-(img1.height)/2, img1.width, img1.height); 
+        ctx.drawImage(img1,  xCentrado-(img1.width)/2, yCentrado-(img1.height)/2, img1.width, img1.height);
+        xPosInicial = canvas.width/2;
+        yPosInicial = canvas.height/2;
+        xPos = canvas.width/2;
+        yPos = canvas.height/2;
+        ctx.closePath();
     }
 
 
@@ -202,7 +195,7 @@ async function logica(input){
 
         
     //Cada palabra del arreglo se checan con el primer valor del map, que son las expresiones regulares
-    // Si hacen match, se guarda el token en otro arreglo
+    // Si hacen match, se guarda el token y la palabra en otro arreglo
 
     // Quitamos espacios en blanco del arreglo
     found.forEach((word,i)=>{
@@ -225,6 +218,8 @@ async function logica(input){
         console.log(token, word);
     })
 
+    //Con esta funcion obtenemos el objeto del arreglo en el que se encuentran los tokens y las palabras
+    // obtenemos [token, word]
     function sigToken2(arr){
         if(arr.length != 0){
             let token = arr.shift();
@@ -233,79 +228,95 @@ async function logica(input){
     }
 
 
-
+// Aqui empieza nuestra funcion del parser para analizar la sintaxis
 await parser(found);
 async function parser(foundArr){
-    if(foundArr.length != 0){
+    if(foundArr.length != 0){ // Si ya no hay mas items en el arreglo, sale, ya que acepta Epsilon
         let [token,word] = sigToken2(foundArr);
-            if(token === 'Instruccion'){
+            if(token === 'Instruccion'){ // Si el token es instruccion, guardamos la palabra en una variable temporal y seguimos
                 let mov = word;
                 [token,word] = sigToken2(foundArr);
-                if(token === 'color'){ // Checamos la constante (color, objeto, direccion) para aceptarla y terminar ó aceptarla y buscar más expresiones
-                    let clr = word;
+                if(token === 'color'){ // Checamos el color y recursividad para seguir aceptando expresiones si quedan en el arreglo
+                    let clr = word; // Guardamos el color en una variable y checamos. Usamos la funcion cambarColor()
                     if(clr === 'rojo'){
+                        console.log("Frase aceptada!");
                         cambiarColor("red");
                         console.log("Color Cambiado a : rojo");
                         await parser(foundArr);
                     }else if (clr === 'azul'){
+                        console.log("Frase aceptada!");
                         cambiarColor("blue");
                         console.log("Color Cambiado a : azul");
                         await parser(foundArr);
                     }
                     else if(clr === 'verde'){
+                        console.log("Frase aceptada!");
                         cambiarColor("green");
                         console.log("Color Cambiado a : verde");
                         await parser(foundArr);
                     }
                     else if (clr ==='amarillo'){
+                        console.log("Frase aceptada!");
                         cambiarColor("yellow");
                         console.log("Color Cambiado a : amarillo");
                         await parser(foundArr);
                     }
                 }
-                else if (token === 'objeto'){
+                else if (token === 'objeto'){ // Si el token es objeto es por que la frase es Centrar Ovni. Limpiamos la pantalla/canvas
                     limpiarCanvas();
-                    console.log("Ovni centrado y canvas borrado")
+                    console.log("Frase aceptada!");
+                    console.log("Ovni centrado y canvas borrado");
 
                 }
-                else if(token === 'direccion'){
+                else if(token === 'direccion'){ // Si el token es direccion, guardamos la palabra en una variable temporal y seguimos
                     let dir = word;
                     [token, word] = sigToken2(foundArr);
                     if(token === 'inicioParentesis' ){ // buscamos aceptar el (
                         [token, word] = sigToken2(foundArr);
-                        if(  token === 'numero'){
-                            let num = word;
+                        if(  token === 'numero'){ // buscamos aceptar el numero de 1-50
+                            let num = word; // Guardamos el numero en una variable temporal 
                             [token,word] = sigToken2(foundArr);
-                            if(token === 'finalParentesis'){
+                            if(token === 'finalParentesis'){ // buscamos aceptar el )
+                                // Si llegamos hasta aqui sin errores es por que la palabra de direccion es izquierda o derecha. Checamos 
+                                // y llamamos la funcion para movernos y recursividad para aceptar más entradas
                                 if(dir === 'izquierda'){
+                                    console.log("Frase aceptada!");
                                     await izquierda(num);
                                     await parser(foundArr);
                                 }
                                 else if(dir === 'derecha'){
+                                    console.log("Frase aceptada!");
                                     await derecha(num);
                                     await parser(foundArr);
                                 }
                                 
                             }
-                            else if(token === 'idComa'){
+                            else if(token === 'idComa'){ // si no hubo final parentesis es por que quiere poner , repetir #. Buscamos ,
                                 [token,word] = sigToken2(foundArr);
-                                if(token ==='Instruccion_Repetir'){
+                                if(token ==='Instruccion_Repetir'){ // Buscamos Instruccion_Repetir y seguimos
                                     [token,word] = sigToken2(foundArr);
-                                    if(token === 'numero'){
+                                    if(token === 'numero'){ // Buscamos numero y lo guardamos en una variable temporal para usarlo en la función
                                         let numRepeat = word;
                                         [token,word] = sigToken2(foundArr);
-                                        if(token === 'finalParentesis'){
+                                        if(token === 'finalParentesis'){ // Esperamos el )
                                             if(dir === 'izquierda'){
+                                                console.log("Frase aceptada!");
+                                                 // Aqui repetimos el movimiento, si fue izquierda o derecha
+
+
+                                                 // El for loop no es para el analizis sintáctico, pero si para
+                                                // que se mueva n numero de veces ya que es repetir
                                                 for (let i =0; i < numRepeat; i++){
                                                     await izquierda(num);
                                                 }
-                                                await parser(foundArr);
+                                                await parser(foundArr); //llamamos recursividad para aceptar más entradas
                                             }
                                             else if(dir === 'derecha'){
+                                                console.log("Frase aceptada!");
                                                 for (let i =0; i < numRepeat; i++){
                                                     await derecha(num);
                                                 }
-                                                await parser(foundArr);
+                                                await parser(foundArr); //llamamos recursividad para aceptar más entradas
                                             }
                                         }
                                         else{
@@ -339,28 +350,35 @@ async function parser(foundArr){
                 }
                 else if(token === 'inicioParentesis'){ // buscamos aceptar el (
                     [token,word] = sigToken2(foundArr);
-                    if( token === 'numero'){
+                    if( token === 'numero'){ // Buscamos aceptar numero
                         let num = word;
                         [token,word] = sigToken2(foundArr);
-                        if(token === 'idComa'){
+                        if(token === 'idComa'){ // Podemos aceptar , para repetir
                             [token,word] = sigToken2(foundArr);
-                            if(token === 'Instruccion_Repetir'){
+                            if(token === 'Instruccion_Repetir'){ // Buscamos Instruccion_Repetir y seguimos
                                 [token,word] = sigToken2(foundArr);
-                                if(token === 'numero'){
+                                if(token === 'numero'){ // Buscamos aceptar numero
                                     let numRepeat = word;
                                     [token,word] = sigToken2(foundArr);
-                                    if(token === 'finalParentesis'){
+                                    if(token === 'finalParentesis'){ // Buscamos aceptar )
+                                        // Si llego hasta aqui solo tenemos que ver cual fue el valor de la variable
+                                        // temporal de mov para avanzar o retroceder con repetir
+
+                                        // El for loop no es para el analizis sintáctico, pero si para
+                                        // que se mueva n numero de veces ya que es repetir
                                         if(mov === 'avanzar'){
+                                            console.log("Frase aceptada!");
                                             for (let i =0; i < numRepeat; i++){
                                                 await adelante(num);
                                             }
-                                            await parser(foundArr);
+                                            await parser(foundArr); //llamamos recursividad para aceptar más entradas
                                         }
                                         else if(mov === 'retroceder'){
+                                            console.log("Frase aceptada!");
                                             for (let i =0; i < numRepeat; i++){
                                                 await atras(num);
                                             }
-                                            await parser(foundArr);
+                                            await parser(foundArr); //llamamos recursividad para aceptar más entradas
                                         }
 
                                     }
@@ -377,14 +395,17 @@ async function parser(foundArr){
                             }
 
                         }
-                        else if(token === 'finalParentesis'){
-                            if(mov === 'avanzar' || mov === 'Avanzar' ){
-                                await adelante(num,3);
-                                await parser(foundArr);
+                        else if(token === 'finalParentesis'){ // Podemos cerrar el parentesis para solo avanzar # veces
+                            if(mov === 'avanzar'){ // Checamos la variable temporal con la palabra clave y realizamos
+                                // la funcion
+                                console.log("Frase aceptada!");
+                                await adelante(num);
+                                await parser(foundArr); //llamamos recursividad para aceptar más entradas
                             }
-                            else if(mov === 'retroceder' || mov === 'Retroceder'){
+                            else if(mov === 'retroceder'){
+                                console.log("Frase aceptada!");
                                 await atras(num);
-                                await parser(foundArr);
+                                await parser(foundArr); //llamamos recursividad para aceptar más entradas
                             }   
                         }
                         else{
