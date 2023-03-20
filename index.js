@@ -273,7 +273,7 @@ async function parser(foundArr){
                     [token, word] = sigToken2(foundArr);
                     if(token === 'inicioParentesis' ){ // buscamos aceptar el (
                         [token, word] = sigToken2(foundArr);
-                        if(  token === 'numero' | token === 'grado'){
+                        if(  token === 'numero'){
                             let num = word;
                             [token,word] = sigToken2(foundArr);
                             if(token === 'finalParentesis'){
@@ -287,13 +287,48 @@ async function parser(foundArr){
                                 }
                                 
                             }
+                            else if(token === 'idComa'){
+                                [token,word] = sigToken2(foundArr);
+                                if(token ==='Instruccion_Repetir'){
+                                    [token,word] = sigToken2(foundArr);
+                                    if(token === 'numero'){
+                                        let numRepeat = word;
+                                        [token,word] = sigToken2(foundArr);
+                                        if(token === 'finalParentesis'){
+                                            if(dir === 'izquierda'){
+                                                for (let i =0; i < numRepeat; i++){
+                                                    await izquierda(num);
+                                                }
+                                                await parser(foundArr);
+                                            }
+                                            else if(dir === 'derecha'){
+                                                for (let i =0; i < numRepeat; i++){
+                                                    await derecha(num);
+                                                }
+                                                await parser(foundArr);
+                                            }
+                                        }
+                                        else{
+                                            console.log("Se esperaba: )")
+                                        }
+
+                                    }
+                                    else{
+                                        console.log("Se esperaba: numero entero 1-50");
+                                    }
+                                }
+                                else{
+                                    console.log("Se esperaba: repetir");
+                                }
+
+                            }
                             else{
-                                console.log("Error! Se esperaba: )");
+                                console.log("Error! Se esperaba: )  ó ,");
                                 //process.exit(1); // Termina el programa con error
                             }
                         }
                         else{
-                            console.log("Error! Se esperaba: numero: 0-360");
+                            console.log("Error! Se esperaba: numero: 1-50");
                             //process.exit(1); // Termina el programa con error
                         }
                     }
@@ -304,7 +339,7 @@ async function parser(foundArr){
                 }
                 else if(token === 'inicioParentesis'){ // buscamos aceptar el (
                     [token,word] = sigToken2(foundArr);
-                    if( token === 'numero' || token === 'grado'){
+                    if( token === 'numero'){
                         let num = word;
                         [token,word] = sigToken2(foundArr);
                         if(token === 'idComa'){
@@ -315,14 +350,16 @@ async function parser(foundArr){
                                     let numRepeat = word;
                                     [token,word] = sigToken2(foundArr);
                                     if(token === 'finalParentesis'){
-                                        if(mov === 'avanzar' || mov === 'Avanzar' ){
+                                        if(mov === 'avanzar'){
                                             for (let i =0; i < numRepeat; i++){
                                                 await adelante(num);
                                             }
                                             await parser(foundArr);
                                         }
-                                        else if(mov === 'retroceder' || mov === 'Retroceder'){
-                                            await atras(num, numRepeat);
+                                        else if(mov === 'retroceder'){
+                                            for (let i =0; i < numRepeat; i++){
+                                                await atras(num);
+                                            }
                                             await parser(foundArr);
                                         }
 
@@ -332,11 +369,11 @@ async function parser(foundArr){
                                     }
                                 }
                                 else{
-                                    console.log("Se esperaba: numero entero")
+                                    console.log("Se esperaba: numero entero 1-50");
                                 }
                             }
                             else{
-                                console.log("Se esperaba: repetir")
+                                console.log("Se esperaba: repetir");
                             }
 
                         }

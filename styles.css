@@ -19,7 +19,9 @@
   text-decoration: none;
   display: inline-block;
 }
-
+.about{
+    text-align: center;
+}
 .info p{
     font-weight: bold;
     display: grid;
@@ -90,7 +92,7 @@ ul{
 }
 .instrucciones{
     display:grid;
-    grid-template-rows: 50px 100px 550px;
+    grid-template-rows: 50px 100px 600px;
     justify-content: center;
     align-items: center;
     border: 10px solid black;
