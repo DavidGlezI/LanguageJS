@@ -1,16 +1,55 @@
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
+
+
+
 canvas.height = 400;
 canvas.width = 800;
 
-let xPos = (canvas.width)/2;
-let yPos = (canvas.height)/2;
+
+
+let xPos = canvas.width/2;
+let yPos = canvas.height/2;
 
 let img1 = new Image();
 img1.src ="ufo.png";
-img1.onload = function(){
-    ctx.drawImage(img1, xPos,yPos, 100 ,100); 
-}
+
+let xPosInicial = canvas.width/2;
+let yPosInicial = canvas.height/2;
+
+let xCentrado = canvas.width/2;
+let yCentrado = canvas.height/2;
+
+
+img1.onload = function () {
+    let offset = 300;
+    while (img1.width > canvas.width || img1.height> canvas.height) {
+    
+      if (img1.width > canvas.width) {
+      
+        let newWidth = canvas.width-offset;
+        
+        img1.height = Math.round((img1.height / img1.width) * newWidth);
+        
+        img1.width = newWidth;
+        
+      }
+      else if (img1.height > canvas.height) {
+      
+        let newHeight = canvas.height-offset;
+        
+        img1.width = Math.round((img1.width / img1.height) * newHeight);
+        
+        img1.height = newHeight;
+      
+      }
+    
+    }
+    
+    ctx.drawImage(img1,  xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height); 
+
+  };
+
 
 let btnAdelante = document.getElementById("adelante");
 let btnAtras = document.getElementById("atras");
@@ -21,18 +60,27 @@ let btnSubmit = document.getElementById('submit');
 
 let string="";
 
+let color = "red";
+
+function cambiarColor(colorNuevo){
+    color = colorNuevo;
+}
+
+
+
 btnSubmit.addEventListener('click',()=>{
+
     let x = document.getElementById("text").value;
-    string = x;
+    string = x.toLowerCase();
     logica(string);
     document.getElementById("text").value = " ";
-    console.log(string);
+    console.log("Input:",string);
     
 })
 
 
 
-
+let ovni = ctx.drawImage(img1,  xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height); 
 
 
 
@@ -48,70 +96,76 @@ async function logica(input){
     */
     // MOVIMIENTOOOOO
 
-    
-
+   
 
     async function moveUfo(x,y){
         const asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms))
+        
         xPos = Number(xPos);
         x = Number(x);
         x= xPos+ x;
-        console.log(x);
+        ctx.strokeStyle = color;
+        ctx.moveTo(xPosInicial, yPosInicial);
         while (true){
             if(xPos < x){
                 xPos++;
             }
             else if (xPos > x){
-                
-                xPos--
+                xPos--;
             }
-            ctx.drawImage(img1, xPos,yPos, 100 ,100);
+            ctx.drawImage(img1,  xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height); 
+            ctx.lineTo(xPos,yPos);
+            ctx.stroke();
+            
             if(xPos === x){
                 break;
             }
             
             await asyncWait(1);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height);
+            yPosInicial = yPos;
+
         }
 
         yPos = Number(yPos);
         y = Number(y);
         y= yPos+ y;
-        console.log(y);
         while (true){
             if(yPos < y){
                 yPos++;
+
             }
             else if (yPos > y){
-                
-                yPos--
+                yPos--;
             }
-            ctx.drawImage(img1, xPos,yPos, 100 ,100);
+           
+            ctx.drawImage(img1,  xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height); 
+            ctx.lineTo(xPos,yPos);
+            ctx.stroke();
             if(yPos === y){
                 break;
             }
             
             await asyncWait(1);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-        }
-        console.log("DONE MOV");
-        
+            ctx.clearRect(xPos-(img1.width)/2,  yPos-(img1.height)/2, img1.width, img1.height);
+            xPosInicial = xPos;    
+        }    
     }
+
+    
 
 
     async function adelante(numMovimiento){
         await moveUfo(0,-numMovimiento);
+
     }
 
     async function atras(numMovimiento){
         await moveUfo(0,numMovimiento);
-
     }
 
     async function izquierda(numMovimiento){
         await moveUfo(-numMovimiento,0);
-
     }
 
     async function derecha(numMovimiento){
@@ -121,29 +175,28 @@ async function logica(input){
 
 
 
-
-
     function limpiarCanvas(){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img1,  xCentrado-(img1.width)/2, yCentrado-(img1.height)/2, img1.width, img1.height); 
     }
 
 
 
-    const regex = /[\w]+|[\(\)]|[0-9]*/g; // Hacer una expresion que acepte todo tipo de palabras, caracteres y simbolos.
+    const regex = /[\w]+|[,]|[\(\)]|[0-9]*/g; // Hacer una expresion que acepte todo tipo de palabras, caracteres y simbolos.
     const found = input.match(regex); // Guarda en un arreglo todas las palabras que hicieron match con la regex
-
 
     // Map con las expresiones y sus tokens correspondientes
     const expressions= new Map([
-        [/[aA]vanzar|[rR]etroceder|[rR]epetir|[vV]uelta|[cC]entrar|[Pp]intura/, "Instruccion"],
+        [/[aA]vanzar|[rR]etroceder|[vV]uelta|[cC]entrar|[Pp]intura/, "Instruccion"],
+        [/[rR]epetir/, "Instruccion_Repetir"],
         [/\(/, "inicioParentesis"],  // value = regex, key = string
         [/\)/, "finalParentesis"],
         [/[Ii]zquierda|[Dd]erecha/, "direccion"],
+        [/\,/, "idComa"],
         [/[Rr]ojo|[Aa]zul|[Vv]erde|[Aa]marillo/, "color"],
         [/[Oo]vni/, "objeto"],
         [/^(?:[1-9]|[1-4][0-9]|50)$/, "numero"],
-        [/([0-2]?[0-9]{1,2}|3[0-5][0-9]|360)/, "grados"],
-    ]);
+    ]); 
         
 
 
@@ -188,15 +241,32 @@ async function parser(foundArr){
             if(token === 'Instruccion'){
                 let mov = word;
                 [token,word] = sigToken2(foundArr);
-                if(token === 'color' | token === 'objeto'){ // Checamos la constante (color, objeto, direccion) para aceptarla y terminar ó aceptarla y buscar más expresiones
-                    // Si el arreglo todavía tiene algo, llamar a recursividad para aceptar la siguiente expresión
-                    if(verificarInputVacio()){
-                        console.log("Frase aceptada / Sintaxis correcta");
-                        //process.exit(0);
-                    }
-                    else{
+                if(token === 'color'){ // Checamos la constante (color, objeto, direccion) para aceptarla y terminar ó aceptarla y buscar más expresiones
+                    let clr = word;
+                    if(clr === 'rojo'){
+                        cambiarColor("red");
+                        console.log("Color Cambiado a : rojo");
+                        await parser(foundArr);
+                    }else if (clr === 'azul'){
+                        cambiarColor("blue");
+                        console.log("Color Cambiado a : azul");
                         await parser(foundArr);
                     }
+                    else if(clr === 'verde'){
+                        cambiarColor("green");
+                        console.log("Color Cambiado a : verde");
+                        await parser(foundArr);
+                    }
+                    else if (clr ==='amarillo'){
+                        cambiarColor("yellow");
+                        console.log("Color Cambiado a : amarillo");
+                        await parser(foundArr);
+                    }
+                }
+                else if (token === 'objeto'){
+                    limpiarCanvas();
+                    console.log("Ovni centrado y canvas borrado")
+
                 }
                 else if(token === 'direccion'){
                     let dir = word;
@@ -209,12 +279,10 @@ async function parser(foundArr){
                             if(token === 'finalParentesis'){
                                 if(dir === 'izquierda'){
                                     await izquierda(num);
-                                    console.log("IZQUIERDA");
                                     await parser(foundArr);
                                 }
                                 else if(dir === 'derecha'){
                                     await derecha(num);
-                                    console.log("DERECHA");
                                     await parser(foundArr);
                                 }
                                 
@@ -234,26 +302,56 @@ async function parser(foundArr){
                         //process.exit(1); // Termina el programa con error
                     }
                 }
-                else if(token === 'inicioParentesis' ){ // buscamos aceptar el (
+                else if(token === 'inicioParentesis'){ // buscamos aceptar el (
                     [token,word] = sigToken2(foundArr);
                     if( token === 'numero' || token === 'grado'){
                         let num = word;
                         [token,word] = sigToken2(foundArr);
-                        if(token === 'finalParentesis'){
+                        if(token === 'idComa'){
+                            [token,word] = sigToken2(foundArr);
+                            if(token === 'Instruccion_Repetir'){
+                                [token,word] = sigToken2(foundArr);
+                                if(token === 'numero'){
+                                    let numRepeat = word;
+                                    [token,word] = sigToken2(foundArr);
+                                    if(token === 'finalParentesis'){
+                                        if(mov === 'avanzar' || mov === 'Avanzar' ){
+                                            for (let i =0; i < numRepeat; i++){
+                                                await adelante(num);
+                                            }
+                                            await parser(foundArr);
+                                        }
+                                        else if(mov === 'retroceder' || mov === 'Retroceder'){
+                                            await atras(num, numRepeat);
+                                            await parser(foundArr);
+                                        }
+
+                                    }
+                                    else{
+                                        console.log("Se esperaba: )")
+                                    }
+                                }
+                                else{
+                                    console.log("Se esperaba: numero entero")
+                                }
+                            }
+                            else{
+                                console.log("Se esperaba: repetir")
+                            }
+
+                        }
+                        else if(token === 'finalParentesis'){
                             if(mov === 'avanzar' || mov === 'Avanzar' ){
-                                console.log("ADELANTE2");
-                                await adelante(num);
-                                console.log("ADELANTE");
+                                await adelante(num,3);
                                 await parser(foundArr);
                             }
                             else if(mov === 'retroceder' || mov === 'Retroceder'){
                                 await atras(num);
-                                console.log("ATRAS");
                                 await parser(foundArr);
-                            }
+                            }   
                         }
                         else{
-                            console.log("Error! Se esperaba: )");
+                            console.log("Error! Se esperaba: ) ó ,");
                             //process.exit(1); // Termina el programa con error
                         }
                     }
@@ -270,12 +368,11 @@ async function parser(foundArr){
                 }
             }
             else{
-                console.log("Fin!");
                 await parser(foundArr);
             }
         }
-        else{
-            console.log("No hay mas INPUT")
-        }
     }
 }
+
+
+

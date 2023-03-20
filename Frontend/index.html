@@ -5,19 +5,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.cdnfonts.com/css/alien-2" rel="stylesheet">
     <title>Alien</title>
 </head>
 <body>
     <div class="container">
-        <canvas id="myCanvas"></canvas>
-        <div>
-            <button  class="btnAdelante" id="adelante">Adelante!</button>
-            <button  class="btnAtras" id="atras">Atras!</button>
-            <button  class="btnIzquierda" id="izquierda">Izquierda!</button>
-            <button  class="btnDerecha" id="derecha">Derecha!</button>
+        <div class="top">
+            <div class="titulo"><h1>OVNI:     Lenguaje tipo DSL</h1></div>
+            <div class="info">
+                <p>
+                Lenguaje tipo DSL inspirado en LOGO. Cuenta con analizador léxico usando regex y un parser para analizar la sintaxis implementado
+                con descenso recursivo.
+                </p>
+            <p>Creado por: David Alejandro González Ibarra A01633817</p>
+            </div>
         </div>
-        <textarea name="Input" id="text" cols="30" rows="5"></textarea>
-        <button id="submit">Submit</button>
+        <div class="mid">
+            <div class="instrucciones">
+                    <h2 class="instruccionesTitulo">Instrucciones de uso del lenguaje OVNI:</h2>
+                    <h2 class="instruccionesParrafo">Reconoce los siguientes comandos para pintar la pantalla:</h2>
+                    <li class="Ejemplos">
+                        <ul>Avanzar (1-50)
+                            <p>Permite mover el ovni hacia arriba</p>
+                        </ul>
+                        
+                        <ul>Retroceder (1-50)
+                            <p>Permite mover el ovni hacia abajo</p>
+                        </ul>
+                        <ul>Vuelta derecha (1-50)
+                            <p>Permite mover a la derecha en angulo de 90 grados</p>
+                        </ul>
+                        <ul>Vuelta izquierda (1-50)
+                            <p>Permite mover a la izquierda en angulo de 90 grados</p>
+                        </ul>
+                        <ul>Pintura amarillo/rojo/verde/azul
+                            <p>Permite cambiar la pintura de toda la linea que dibuja</p>
+                        </ul>
+                        <ul>Centrar Ovni
+                            <p>Permite centrar el ovni y limpiar los dibujos</p>
+                        </ul>
+                        <ul>Para repetir un comando se ponde dentro del paréntesis</ul>
+                        <ul>Ejemplo: Avanzar (1-50, repetir #)</ul>
+                        <ul>Acepta comandos seguidos uno de otro sin importar espacios o saltos de linea</ul>
+                    </li>
+            </div>
+            <div class="parser">
+                <div class="CanvasOut"><canvas id="myCanvas"></canvas></div>
+                <textarea class="txtArea" name="Input" id="text" cols="30" rows="5"></textarea>
+                <button class="btn" id="submit">Enter</button>
+            </div>
+        </div>
     </div>
 </body>
 <script src="index.js"></script>

@@ -1,16 +1,136 @@
 *{
     padding: 0;
     margin: 0;
+    background-color: beige;
+    font-family: 'Alien', sans-serif;
 }
 
-
-#myCanvas {
-    border: 2px solid black;
-}   
-
-#container{
-    display: grid;
+.img{
     width: 100%;
+}
+
+.myCanvas {
+    border: 10px solid black;
+}   
+.btn{
+    font-size: 16px;
+    background-color: #4CAF50; /* Green */
+    text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.info p{
+    font-weight: bold;
+    display: grid;
+    justify-content: center;
+}
+.info p{
+    font-family:'Courier New', Courier, monospace;
+    
+}
+.container{
+    display: grid;
+    grid-template-rows: 150px 800px;
+    grid-template-columns: 1fr;
     justify-content: center;
     align-items: center;
 }
+
+.top{
+    display:grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 50px 100px;
+    
+}
+.btn{
+    font-size: 40px;
+}
+
+.txtArea{
+    background-color: yellowgreen;
+}
+
+.Ejemplos ul p{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    background-color: yellowgreen;
+}
+
+.btn:hover {background-color: yellowgreen}
+.titulo{
+    display:grid;
+    justify-content: center;
+    align-items: center;
+}
+.instruccionesTitulo{
+    text-align: center;
+    background-color: yellowgreen;
+}
+.instruccionesParrafo{
+    background-color: yellowgreen;
+    font-size: 20px;
+    text-align: center;
+    
+    
+}
+.Ejemplos{
+    text-align: center;
+    display: grid;
+    background-color: yellowgreen;
+    font-size: 20px;
+    
+}
+ul{
+    background-color: yellowgreen;
+    padding-bottom: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    
+}
+.instrucciones{
+    display:grid;
+    grid-template-rows: 50px 100px 550px;
+    justify-content: center;
+    align-items: center;
+    border: 10px solid black;
+    background-color: yellowgreen;
+}
+
+
+.titulo, .info{
+    border: 2px solid black;
+}
+
+.info{
+    display:grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.mid{
+    display:grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 500px 1fr;
+    justify-content: center;
+    align-items: center;
+    padding-left: 50px;
+}
+
+
+.parser{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+.CanvasOut{
+    border: 10px solid black;
+}
+
+textarea {
+    resize: none;
+    font-family: sans-serif;
+  }
